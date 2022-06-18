@@ -150,7 +150,7 @@ struct Hotel
      void display_all_customer();     //для отображения забронированых номеров
      void display_a_customer();       //для отображения записи клиента
      void delete_customer();          //для удаления записи
-   
+   void intro();
      
 };
 
@@ -431,7 +431,7 @@ int main()
     SetConsoleCP(1251);
     SetConsoleOutputCP(1251);
     Hotel h;
-    intro();
+    h.intro();
     h.main_menu();
     return 0;
 }
