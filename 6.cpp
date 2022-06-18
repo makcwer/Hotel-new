@@ -329,7 +329,7 @@ void Hotel::delete_customer()
     system("cls");
     display_all_customer();
     int numFile = 0;
-    cout << "\n\n\n\ МЕНЮ УДАЛЕНИЯ";
+    cout << "\n\n\n МЕНЮ УДАЛЕНИЯ";
     cout << "\n\nВыберите Номер Клиента, которого вы хотите удалить: ";
     cin >> numFile;
     ifstream fin;
