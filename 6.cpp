@@ -7,7 +7,28 @@
 #include <iomanip>
 #include <conio.h>
 using namespace std;
-struct Hotel
+struct Booking
+{
+    int room_num;
+    string data;
+    int num_days;
+    int sum_pay;
+};
+struct Room
+{
+    int room_no;
+    string category;
+    int local_no;
+};
+struct Otel
+{
+    string name_otel;
+    string address_hotel;
+    int r_no;
+    string phone_otel;
+    unsigned int cost_no;
+};
+struct Client
 {
     int room_number;
     string name;
@@ -15,7 +36,7 @@ struct Hotel
     string phone;
     int days;
     float cost;
-    Hotel() {};
+   // Hotel() {};
  /*   Hotel(int room_number,string name, string address, string phone, int days, float cost)
     {
         this->room_number = room_number;
@@ -114,7 +135,7 @@ struct Hotel
      void report()
      {
          int number = 1;
-         vector<Hotel> hotels;
+         vector<Client> hotels;
         do{
             string path;
             path = path + ("hotel\\" + to_string(number) + ".txt");
@@ -126,7 +147,7 @@ struct Hotel
            }
            else
            {
-               Hotel h;
+               Client h;
                createHotel(text, h);
                hotels.push_back(h);
                number++;
@@ -136,7 +157,7 @@ struct Hotel
      /*   for (auto otel : hotels)
             otel.showInfo();*/
      }
-     void createHotel(vector<string> text, Hotel& h)
+     void createHotel(vector<string> text, Client& h)
      {
          h.name = text[0];
          h.address = text[1];
@@ -144,20 +165,20 @@ struct Hotel
          h.days = stod(text[3]);
          h.cost = stod(text[4]);
      }
-     void main_menu();                //для отображения главного меню
+     void client_menu();                //для отображения главного меню
      void save_customer();            //для бронирования номера
      void modify_customer();          //для редактирования записи клиента
      void display_all_customer();     //для отображения забронированых номеров
      void display_a_customer();       //для отображения записи клиента
      void delete_customer();          //для удаления записи
-   void intro();
      
 };
 
-void Hotel::save_customer()
+void Client::save_customer()
 {
     system("cls");
     int option = 0;
+    display_all_customer();
     int r;
     cout << "\n\nВыберите номер для заселения: ";
     cin >> r;
@@ -205,11 +226,12 @@ void Hotel::save_customer()
     fout.close();
 }
 
-void Hotel::display_a_customer()
+void Client::display_a_customer()
 {
     system("cls");
+    display_all_customer();
     int r = 0;
-    cout << "\n Введите N номера: ";
+    cout << "\n Выберите клиента: ";
     cin >> r;
     string path("hotel\\" + to_string(r) + ".txt");
     ifstream fin;
@@ -226,7 +248,7 @@ void Hotel::display_a_customer()
             }
             cout << "\n Сведения о клиенте";
             cout << "\n ------------------";
-            cout << "\nN номера: " << r;
+            cout << "\n Номер проживания: " << r;
             cout << "\n Имя: " << client[0];
             cout << "\n Адрес: " << client[1];
             cout << "\n Номер телефона: " << client[2];
@@ -237,7 +259,7 @@ void Hotel::display_a_customer()
     }
     else
     {
-        cout << "\n Извините, номера нет. не найден или пустой....!!";
+        cout << "\n Извините, клиента нет....!!";
     }
     fin.close();
     cout << "\nНажмите клавишу Esc... для возврата в главное меню \n";
@@ -252,7 +274,7 @@ void Hotel::display_a_customer()
     system("cls");
 }
 
-void Hotel::modify_customer()
+void Client::modify_customer()
 {
     system("cls");
     int numFile = 0;
@@ -260,7 +282,7 @@ void Hotel::modify_customer()
     ofstream fout;
     display_all_customer();
     cout << "\n\n\tМеню редактирования";
-    cout << "\n\n\tВведите N Номера для изменения: ";
+    cout << "\n\n\tВыберите № клиента для изменения: ";
     cin >> numFile;
     cin.get();
     string path("hotel\\" + to_string(numFile) + ".txt");
@@ -295,10 +317,9 @@ void Hotel::modify_customer()
     system("cls");
 }
 
-void Hotel::display_all_customer()
+void Client::display_all_customer()
 {
     system("cls");
-    Hotel h;
     int numFile = 1;
     string path("hotel\\" + to_string(numFile) + ".txt");
     fstream fp;
@@ -311,11 +332,11 @@ void Hotel::display_all_customer()
     }
     else
     {
-        cout << "\n\t\t\tСписок забронированных номеров";
+        cout << "\n\t\t\tСписок проживающих клиентов";
         cout << "\n\t\t\t-------------------------------\n";
         cout << endl;
         cout << "==============================================================================================\n";
-        cout << "N Ном.|" << setw(5) << "Имя" << setw(20) << "|Адрес" << setw(30) << "|N Телефон" << setw(15) << "|Дни" << setw(15) << "|Стоимость|" << endl;
+        cout << "Клиент|" << setw(5) << "Имя" << setw(20) << "|Адрес" << setw(30) << "|№ Телефон" << setw(15) << "|Дни" << setw(15) << "|Стоимость|" << endl;
         cout << "==============================================================================================\n";
         report();
     }
@@ -324,7 +345,7 @@ void Hotel::display_all_customer()
     _getch();
 }
 
-void Hotel::delete_customer()
+void Client::delete_customer()
 {
     system("cls");
     display_all_customer();
@@ -332,11 +353,7 @@ void Hotel::delete_customer()
     cout << "\n\n\n МЕНЮ УДАЛЕНИЯ";
     cout << "\n\nВыберите Номер Клиента, которого вы хотите удалить: ";
     cin >> numFile;
-    ifstream fin;
-    ofstream fout;
-    string path("hotel\\" + to_string(numFile) + ".txt");
-    string path_temp("hotel\\" + to_string(numFile) + ".txt",ios::in | ios::out);
-    if (room_number == numFile)
+    if (room_number = numFile)
     {
         cout << "\nВы действительно хотите удалить запись (Y/N): ";
         do {
@@ -347,9 +364,12 @@ void Hotel::delete_customer()
                 break;
             }
             else
-            {           
+            {   
+                numFile++;
+                string path("hotel\\" + to_string(numFile) + ".txt");
                 remove(path.c_str());
-                rename(path_temp.c_str(), path.c_str());
+                string newPath("hotel\\" + to_string(numFile - 1) + ".txt");
+                rename(path.c_str(), newPath.c_str());
                 cout << "\nФайл удален!";
                 break;
             }
@@ -363,14 +383,14 @@ void Hotel::delete_customer()
     _getch();
 }
 
-void Hotel::main_menu()
+void Client::client_menu()
 {
     int option;
     while(true)
     {
         cout << "\n\t\t@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@";
-        cout << "\n\t\t1.ЗАБРОНИРОВАТЬ НОМЕР";
-        cout << "\n\t\t2.ИНФОРМАЦИЯ О НОМЕРАХ";
+        cout << "\n\t\t1.Добавить клиента";
+        cout << "\n\t\t2.Иформация о клиентах";
         cout << "\n\t\t3.ИНФОРМАЦИЯ О КЛИЕНТЕ";
         cout << "\n\t\t4.РЕДАКТИРОВАНИЕ";
         cout << "\n\t\t5.УДАЛЕНИЕ";
@@ -430,8 +450,8 @@ int main()
     srand(time(NULL));
     SetConsoleCP(1251);
     SetConsoleOutputCP(1251);
-    Hotel h;
-    h.intro();
-    h.main_menu();
+    Client h;
+    intro();
+    h.client_menu();
     return 0;
 }
