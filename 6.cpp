@@ -154,11 +154,39 @@ struct Hotel
 };
 void Room::bookRoomCategory()
 {
-    showRoomCategory();
+    int enter = 0;
+    int r = 0;
+    ofstream fout;
+    cout << "1.Показать одноместные номера \n";
+    cout << "2.Показать двуместные номера \n";
+    cout << "3.Показать трехместные номера \n";
+    cout << "ВАШ ВЫБОР: ";
+    cin >> enter;
+    if (enter == 1)
+    {
+        system("cls");
+        oneRoomCat();
+        cout << endl;
+        do {
+            cout << "Выберите № номера для бронирования: \n";
+            cin >> r;
+            if (room_no == r)
+            {
+                fout.open("hotel\\rooms\\" + to_string(num) + ".txt");
+                if (fout.is_open())
+                {
+                    fout << status + 1 << endl;
+                }
+                cout << "Номер забронирован! ";
+            }
+            cout << "\n\tНажмите 1, чтобы забронировать еще номер.";
+            cout << "\n\tНажмите 2, чтобы вернуться в главное меню.\n";
+            cout << "Ваш выбор: ";
+        } while (enter == 1);
+    }
 }
 void Room::bookRoom()
 {
-    Room r;
     cout << "1.Забронировать номер по категории \n";
     cout << "2.Забронировать номер по стоимости \n";
     cout << "3.Вернутся в главное меню \n";
@@ -169,7 +197,7 @@ void Room::bookRoom()
         switch (change)
         {
         case 1:system("cls");
-            r.bookRoomCategory();
+            bookRoomCategory();
             break;
         case 2:system("cls");
             //bookRoomCost();
@@ -458,7 +486,7 @@ void Client::save_customer()
             }
             else
             {
-                room_number = r;
+                room_number == r;
                 add_customer();
                 if (fout.is_open())
                 {
