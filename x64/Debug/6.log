@@ -1,6 +1,6 @@
 ﻿  6.cpp
-C:\Users\wer\source\repos\6\6\6.cpp(100,21): warning C4244: =: преобразование "int" в "float", возможна потеря данных
-C:\Users\wer\source\repos\6\6\6.cpp(165,23): warning C4244: =: преобразование "double" в "int", возможна потеря данных
-C:\Users\wer\source\repos\6\6\6.cpp(166,23): warning C4244: =: преобразование "double" в "float", возможна потеря данных
-C:\Users\wer\source\repos\6\6\6.cpp(449,15): warning C4244: аргумент: преобразование "time_t" в "unsigned int", возможна потеря данных
+C:\Users\wer\source\repos\6\6\6.cpp(107,26): warning C4244: =: преобразование "double" в "unsigned short", возможна потеря данных
+C:\Users\wer\source\repos\6\6\6.cpp(108,26): warning C4244: =: преобразование "double" в "unsigned short", возможна потеря данных
+C:\Users\wer\source\repos\6\6\6.cpp(109,24): warning C4244: =: преобразование "double" в "int", возможна потеря данных
+C:\Users\wer\source\repos\6\6\6.cpp(742,15): warning C4244: аргумент: преобразование "time_t" в "unsigned int", возможна потеря данных
   6.vcxproj -> C:\Users\wer\source\repos\6\x64\Debug\6.exe
