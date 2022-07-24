@@ -152,14 +152,6 @@ struct Room
     void bookRoomCategory();
     void bookRoom();
 };
-struct Hotel
-{
-    string city;
-    string street;
-    int number;
-    vector<Room> rooms;
-
-};
 void Room::saveRoom()
 {
     showHeadRoom();
@@ -267,7 +259,7 @@ void Room::bookRoom()
     cout << "Выберите № номера для бронирования: \n";
     cin >> k;
     do {
-        Room t;
+        Room r;
         string ispath = "";
         ispath = ispath + ("hotel\\rooms\\" + to_string(f) + ".txt");
         vector<string> text;
@@ -291,23 +283,21 @@ void Room::bookRoom()
         }
         else
         {
-            createRoom(text, t);
-            rooms.push_back(t);
+            createRoom(text, r);
+            rooms.push_back(r);
         }
-        cout << t.room_no;
-        if (t.room_no == k)
+        if (r.room_no == k)
         {
-            for (int i = 0; i < rooms.size(); i++)
-            {
-                cout << "Введите статус 0-1: ";
-                cin >> status;
-                rooms[i].status = status;
-            }
-            fout.open(ispath,ios::app);
+            cout << "Введите статус 0-(свободен) 1-(занят): ";
+            cin >> r.status;
+            fout.open(ispath);
             if (fout.is_open())
             {
-                for (int i = 0; i < rooms.size(); i++)
-                    fout << rooms[i]. status << endl;
+                fout << r.room_no << endl;
+                fout << r.category << endl;
+                fout << r.cost_num << endl;
+                fout << r.local_no << endl;
+                fout << r.status << endl;
             }
             cout << "Номер забронирован! ";
             esc();
@@ -386,7 +376,6 @@ void Room::menuRoom()
         }
     } while (true);
 }
-
 struct Client
 {
     unsigned int number;
@@ -522,12 +511,12 @@ struct Client
      void report()
      {
          int nFile = 1;
-         vector<Client> hotels;
+         vector<Client> clients;
         do{
             string path;
             path = path + ("hotel\\clients\\" + to_string(nFile) + ".txt");
             vector<string> text;
-            readFileHotel(path, text,5);
+            readFileHotel(path, text,20);
            if(text.empty())
            {
               break;
@@ -536,7 +525,7 @@ struct Client
            {
                Client h;
                createHotel(text, h);
-               hotels.push_back(h);
+               clients.push_back(h);
                nFile++;
                h.showInfo(nFile);
            }
@@ -558,7 +547,6 @@ struct Client
      void delete_customer();          //для удаления записи
      
 };
-
 void Client::save_customer()
 {
     system("cls");
@@ -615,7 +603,6 @@ void Client::save_customer()
     fp.close();
     fout.close();
 }
-
 void Client::display_a_customer()
 {
     system("cls");
@@ -663,7 +650,6 @@ void Client::display_a_customer()
     } while (true);
     system("cls");
 }
-
 void Client::modify_customer()
 {
     system("cls");
@@ -723,22 +709,21 @@ void Client::display_all_customer()
     string path("hotel\\clients\\" + to_string(numFile) + ".txt");
     fstream fp;
     fp.open(path, ios::in);
-    if (!fp.is_open())
+    if (fp.is_open())
+    {
+        showHeadClient();
+        report();
+    }
+    else
     {
         cout << "ERROR!!! FILE COULD NOT BE OPEN ";
         _getch();
         return;
     }
-    else
-    {
-        showHeadClient();
-        report();
-    }
     fp.close();
     cout << "\n Нажмите любую клавишу, чтобы продолжить.....!!";
     _getch();
 }
-
 void Client::delete_customer()
 {
     system("cls");
@@ -813,7 +798,6 @@ void Room::main_menu()
 
     } while (true);
 }
-
 void Client::client_menu()
 {
     Room r;
@@ -854,7 +838,6 @@ void Client::client_menu()
     }
 
 }
-
 void intro()
 {
     system("color 07");
