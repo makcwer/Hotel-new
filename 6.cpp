@@ -378,12 +378,12 @@ void Room::menuRoom()
 }
 struct Client
 {
-    unsigned int number;
-    string name;
-    string surename;
-    unsigned int phone;
-    unsigned short int days;
-    int cost;
+    int number = 1;
+    string name = "";
+    string surename = "";
+    unsigned int phone = 0;
+    unsigned short int days = 0;
+    int cost = 0;
    // Hotel() {};
  /*   Hotel(int room_number,string name, string surename, string phone, int days, float cost)
     {
@@ -397,11 +397,11 @@ struct Client
     void showInfo(int N)
     {
         cout <<"  " << N - 1 << "\t";
-        cout << setw(18) << left << this->name;
-        cout << setw(23) << left << this->surename;
-        cout << setw(18) << left << this->phone;
-        cout << setw(8) << left << this->days;
-        cout << setw(5) << left << this->cost << endl;
+        cout << setw(17) << left << this->name;
+        cout << setw(24) << left << this->surename;
+        cout << setw(20) << left << this->phone;
+        cout << setw(7) << left << this->days;
+        cout << setw(4) << left << this->cost << endl;
     }
     void show_customer(int)
     {
@@ -441,23 +441,24 @@ struct Client
         getline(cin, name);
         cout << " Фамилия: ";
         getline(cin, surename);
-        cin.get();
-        do {
-            cout << " Номер телефона: ";
-            cin >> phone;
-            cin.get();
-            if (phone > 9999999999 || phone < 1000000000)
-            {
-                cout << "Введите корректный номер телефона. \n";
-                cin.clear();
-                cin.ignore(255);
-                continue;
-            }
-            else
-            {
-                break;
-            }
-        } while (true);
+        cout << " Номер телефона: ";
+        cin >> phone;
+        //do {
+        //    cout << " Номер телефона: ";
+        //    cin >> phone;
+        //    cin.get();
+        //    if (phone > 9999999999 || phone < 1000000000)
+        //    {
+        //        cout << "Введите корректный номер телефона. \n";
+        //        cin.clear();
+        //        cin.ignore(255);
+        //        continue;
+        //    }
+        //    else
+        //    {
+        //        break;
+        //    }
+        //} while (true);
         cout << " Количество дней для проживания: ";
         cin >> days;
         cost = days * 900;//900 стоимость номера в день
@@ -471,21 +472,20 @@ struct Client
         getline(cin, name);
         cout << "Новыая Фамилия: ";
         getline(cin, surename);
-        do {
-            cout << "Новый Номер телефона: ";
-            cin >> phone;
-            cin.get();
-            if (phone > 9999999999 || phone < 1000000000)
-            {
-                cout << "Введите корректный номер телефона\n";
-                continue;
-            }
-            else
-            {
-                break;
-            }
-        } while (true);
-        cin.get();
+        //do {
+        //    cout << "Новый Номер телефона: ";
+        //    cin >> phone;
+        //    cin.get();
+        //    if (phone > 9999999999 || phone < 1000000000)
+        //    {
+        //        cout << "Введите корректный номер телефона\n";
+        //        continue;
+        //    }
+        //    else
+        //    {
+        //        break;
+        //    }
+        //} while (true);
         cout << " Количество дней для проживания: ";
         cin >> days;
         cout << "Введите сумму:";
@@ -513,22 +513,22 @@ struct Client
          int nFile = 1;
          vector<Client> clients;
         do{
+            Client h;
             string path;
             path = path + ("hotel\\clients\\" + to_string(nFile) + ".txt");
             vector<string> text;
-            readFileHotel(path, text,20);
+            readFileHotel(path, text,5);
            if(text.empty())
            {
               break;
            }
            else
            {
-               Client h;
                createHotel(text, h);
                clients.push_back(h);
-               nFile++;
-               h.showInfo(nFile);
            }
+           nFile++;
+           h.showInfo(nFile);
         }while(true);
      }
      void createHotel(vector<string> text, Client& h)
@@ -699,7 +699,7 @@ void showHeadClient()
     cout << "\n\t\t\t-------------------------------\n";
     cout << endl;
     cout << "=====================================================================================\n";
-    cout << " № Кл. |" << "Имя \t\t" << "|Фамилия\t\t" << "|№ Телефон\t" << "|Кол.Дней " << "|Стоимость|" << endl;
+    cout << " № Кл. |" << "Имя \t\t" << "|Фамилия\t\t" << "| № Телефон\t" << "|Кол.Дней " << "|Стоимость|" << endl;
     cout << "=====================================================================================\n";
 }
 void Client::display_all_customer()
