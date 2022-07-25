@@ -144,6 +144,7 @@ struct Room
     void bookRoomCategory();
     void bookRoom();
     void bookRoomCost();
+    void releaseNumber();
 };
 struct Client
 {
@@ -403,52 +404,28 @@ void Room::bookRoomCost()
     Room h;
     cout << "Введите минимальную сумму:  \n";
     cin >> r;
-    //cout << "Введите максимальную сумму: \n";
-    //cin >> k;
+    cout << "Введите максимальную сумму: \n";
+    cin >> k;
     system("cls");
     infoHeadRoom();
     vector<Room> rooms;
     int num = 1;
-    //do {
-    //    Room h;
-    //    string path = "";
-    //    path = path + ("hotel\\rooms\\" + to_string(num) + ".txt");
-    //    vector<string> text;
-    //    readFileRoom(path, text, 20);
-    //    if (text.empty())
-    //    {
-    //        break;
-    //    }
-    //    else
-    //    {
-    //        createRoom(text, h);
-    //        rooms.push_back(h);
-    //    }
-    //    if (h.local_no >= r && h.local_no <= k)
-    //    {
-    //        h.listRoom();
-    //    }
-    //    num++;
-    //} while (true);
     do {
-        vector<string> room;
-        fstream fin;
-        string path("hotel\\rooms\\" + to_string(num) + ".txt");
-        fin.open(path);
-        if (fin.is_open())
-        {
-            string line;
-            while (getline(fin, line))
-            {
-                room.push_back(line);
-            }
-        }
-        else
+        Room h;
+        string path = "";
+        path = path + ("hotel\\rooms\\" + to_string(num) + ".txt");
+        vector<string> text;
+        readFileRoom(path, text, 20);
+        if (text.empty())
         {
             break;
         }
-        fin.close();
-        if (h.cost_num == r )
+        else
+        {
+            createRoom(text, h);
+            rooms.push_back(h);
+        }
+        if (h.cost_num >= r && h.cost_num <= k)
         {
             h.listRoom();
         }
@@ -530,8 +507,7 @@ void Room::bookRoom()
         if (r.room_no == k)
         {
             c.save_customer();
-            cout << "Введите статус 0-(свободен) 1-(занят): ";
-            cin >> r.status;
+            r.status = k;
             fout.open(ispath);
             if (fout.is_open())
             {
@@ -657,7 +633,7 @@ void Client::save_customer()
             fout << cost << endl;
         }
         fout.close();
-        cout << "\nНажмите любую клавишу для возврата в предыдущее меню. \n";
+        cout << "\nНажмите любую клавишу для продолжения... \n";
         char battom;
         battom = _getch();
         if ((int)battom == 27)
@@ -692,7 +668,7 @@ void Client::display_a_customer()
             }
             cout << "\n Сведения о клиенте";
             cout << "\n ------------------";
-            cout << "\n Номер проживания: " << r;
+            cout << "\n Клиент №: " << r;
             cout << "\n Имя: " << client[0];
             cout << "\n Фамилия: " << client[1];
             cout << "\n Номер телефона: " << client[2];
@@ -840,6 +816,84 @@ void Client::delete_customer()
     cout << "\n\n Нажмите любую клавишу, чтобы продолжить....!!";
     _getch();
 }
+void Room::releaseNumber()
+{
+    int k = 0;
+    int f = 1;
+    showHeadRoom();
+    vector<Room> rooms;
+    int num = 1;
+    do {
+        string path;
+        Room h;
+        path = path + ("hotel\\rooms\\" + to_string(num) + ".txt");
+        vector<string> text;
+        readFileRoom(path, text, 20);
+        if (text.empty())
+        {
+            break;
+        }
+        else
+        {
+            createRoom(text, h);
+            rooms.push_back(h);
+        }
+        num++;
+        h.showRo(num);
+    } while (true);
+    Client c;
+    fstream fin;
+    ofstream fout;
+    f = 1;
+    cout << "Выберите № номера для освобождения: \n";
+    cin >> k;
+    do {
+        Room r;
+        string ispath = "";
+        ispath = ispath + ("hotel\\rooms\\" + to_string(f) + ".txt");
+        vector<string> text;
+        ifstream fin;
+        fin.open(ispath);
+        if (fin.is_open())
+        {
+            string line;
+            for (int i = 0; i < 5; i++)
+            {
+                line.assign("");
+                getline(fin, line);
+                text.push_back(line);
+            }
+
+        }
+        fin.close();
+        if (text.empty())
+        {
+            break;
+        }
+        else
+        {
+            createRoom(text, r);
+            rooms.push_back(r);
+        }
+        if (r.room_no == k)
+        {
+            k = 0;
+            r.status = k;
+            fout.open(ispath);
+            if (fout.is_open())
+            {
+                fout << r.room_no << endl;
+                fout << r.category << endl;
+                fout << r.cost_num << endl;
+                fout << r.local_no << endl;
+                fout << r.status << endl;
+            }
+            cout << "Номер свободен! ";
+            esc();
+        }
+        f++;
+    } while (true);
+}
 void Room::main_menu()
 {
     Client c;
@@ -866,7 +920,8 @@ void Room::main_menu()
         case 3:system("cls");
             menuBookRoom();
             break;
-        case 4:
+        case 4:system("cls");
+            releaseNumber();
             break;
         case 5:system("cls");
             saveRoom();
