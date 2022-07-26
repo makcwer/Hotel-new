@@ -6,6 +6,7 @@
 #include <cstdio>
 #include <iomanip>
 #include <conio.h>
+#include <regex>
 
 using namespace std;
 
@@ -200,52 +201,34 @@ struct Client
         }
         fin.close();
     }
-    string ReadAndValidateUserNumber(string userNumber)
+    string telNumb(string& num)
     {
-        bool check = false;
-        const int NUM_LENGTH = 10;
-        do
-        {
-            cout << "Номер телефона:";
-            getline(cin, userNumber);
-            check = true;
-            if (userNumber.length() != NUM_LENGTH)
-                cout << "The phone number may contain 10 digits only. \n";
-
+        do {
+            getline(cin, num);
+            regex rx("\\+[[:digit:]]{1}\\([[:digit:]]{3}\\)[[:digit:]]{3}-[[:digit:]]{2}-[[:digit:]]{2}");
+            if (regex_match(num, rx))
+            {
+                break;
+            }
             else
             {
-                userNumber.insert(0, "(");
-                userNumber.insert(4, ")");
-                userNumber.insert(8, "-");
-
-                for (int i = 0; i < userNumber.length(); i++)
-                {
-                    if (isdigit(userNumber[i]))
-                    {
-                        userNumber = NUM_LENGTH;
-                    }
-                }
+                cout << "Формат ввода +7(999)999-99-99\n";
             }
-
-            if (!check)
-            {
-                cout << "Invalid Entry! Please try again." << endl;
-            }
-        } while (!check);
-
-        return userNumber;
+        } while (true);
+        return num;
     }
     void add_customer()
     {
         cout << "\n Введите данные клиента";
         cout << "\n ----------------------\n";
         cout << "Имя:";
+        cin.get();
         getline(cin, name);
-        cin.get();
         cout << "Фамилия:";
-        getline(cin, surename);
         cin.get();
-        ReadAndValidateUserNumber(phone);
+        getline(cin, surename);
+        cout << "Номер телефона:";
+        telNumb(phone);
         cout << "Количество дней для проживания:";
         cin >> days;
         cost = days * 900;//900 стоимость номера в день
@@ -256,12 +239,13 @@ struct Client
         cout << "\n№ Номер : " << number;
         cout << "\n ----------------------" << endl;
         cout << "Новое Имя: ";
+        cin.get();
         getline(cin, name);
         cout << "Новыая Фамилия: ";
+        cin.get();
         getline(cin, surename);
-        cout << "Новый Номер телефона: ";
-        getline(cin, phone);
-        ReadAndValidateUserNumber(phone);
+        cout << "Новый Номер телефона:";
+        telNumb(phone);
         cout << " Количество дней для проживания: ";
         cin >> days;
         cout << "Введите сумму:";
@@ -311,7 +295,7 @@ struct Client
     {
         h.name = text[0];
         h.surename = text[1];
-        h.phone = stoi(text[2]);
+        h.phone = text[2];
         h.days = stoi(text[3]);
         h.cost = stoi(text[4]);
     }
@@ -600,12 +584,11 @@ void Client::save_customer()
     //display_all_customer();
     int r = 1;
     ofstream fout;
+    vector<string> client;
+    fstream fin;
+    Room h;
     do {
-        vector<string> client;
-        fstream fin;
-        Room h;
-        string path;
-        path = path + ("hotel\\clients\\" + to_string(r) + ".txt");
+        string path("hotel\\clients\\" + to_string(r) + ".txt");
         fin.open(path);
         if (!fin.is_open())
         {
@@ -730,9 +713,9 @@ void showHeadClient()
     cout << "\n\t\t\tСписок проживающих клиентов";
     cout << "\n\t\t\t-------------------------------\n";
     cout << endl;
-    cout << "=====================================================================================\n";
-    cout << " № Кл. |" << "Имя \t\t" << "|Фамилия\t\t" << "| № Телефон\t" << "|Кол.Дней " << "|Стоимость|" << endl;
-    cout << "=====================================================================================\n";
+    cout << "======================================================================================\n";
+    cout << " № Кл. |" << "Имя \t\t" << "|Фамилия\t\t" << "| № Телефон\t " << "|Кол.Дней " << "|Стоимость|" << endl;
+    cout << "======================================================================================\n";
 }
 void Client::display_all_customer()
 {
