@@ -61,8 +61,6 @@ struct Room
     }
     void showAllRoom()
     {
-        //№ | №Номер | статус (vip, обычный) | цена за сутки | категория | статус (занят/нет)
-       // 1	17	vip			3000	     1		занят
         showHeadRoom();
         vector<Room> rooms;
         int num = 1;
@@ -107,7 +105,7 @@ struct Room
         h.local_no = stoi(text[3]);
         h.status = stoi(text[4]);
     }
-    void add_customer_room()
+    void add_room()
     {
         cout << "\tМЕНЮ ДОБАВЛЕНИЯ НОМЕРА\n";
         cout << "\n Введите данные номера";
@@ -121,9 +119,8 @@ struct Room
         cin >> cost_num;
         cout << " Кол.мест: ";
         cin >> local_no;
-        cin.get();
-        cout << " Статус: ";
-        cin >> status;
+        //cout << " Статус: 0 - (свободен), 1 - (занят): ";
+        status = 0;
         cout << "\n Номер добавлен...!!!" << endl;
     }
     void showHeadRoom()
@@ -151,7 +148,7 @@ struct Client
     int number = 1;
     string name = "";
     string surename = "";
-    unsigned int phone = 0;
+    string phone = "";
     unsigned short int days = 0;
     int cost = 0;
     // Hotel() {};
@@ -203,36 +200,53 @@ struct Client
         }
         fin.close();
     }
+    string ReadAndValidateUserNumber(string userNumber)
+    {
+        bool check = false;
+        const int NUM_LENGTH = 10;
+        do
+        {
+            cout << "Номер телефона:";
+            getline(cin, userNumber);
+            check = true;
+            if (userNumber.length() != NUM_LENGTH)
+                cout << "The phone number may contain 10 digits only. \n";
+
+            else
+            {
+                userNumber.insert(0, "(");
+                userNumber.insert(4, ")");
+                userNumber.insert(8, "-");
+
+                for (int i = 0; i < userNumber.length(); i++)
+                {
+                    if (isdigit(userNumber[i]))
+                    {
+                        userNumber = NUM_LENGTH;
+                    }
+                }
+            }
+
+            if (!check)
+            {
+                cout << "Invalid Entry! Please try again." << endl;
+            }
+        } while (!check);
+
+        return userNumber;
+    }
     void add_customer()
     {
         cout << "\n Введите данные клиента";
-        cout << "\n ----------------------" << endl;
-        cout << " Имя: ";
-        cin >> name;
+        cout << "\n ----------------------\n";
+        cout << "Имя:";
+        getline(cin, name);
         cin.get();
-        cout << " Фамилия: ";
-        cin >> surename;
+        cout << "Фамилия:";
+        getline(cin, surename);
         cin.get();
-        cout << " Номер телефона: ";
-        cin >> phone;
-        //do {
-        //    cout << " Номер телефона: ";
-        //    cin >> phone;
-        //    cin.get();
-        //    if (phone > 9999999999 || phone < 1000000000)
-        //    {
-        //        cout << "Введите корректный номер телефона. \n";
-        //        cin.clear();
-        //        cin.ignore(255);
-        //        continue;
-        //    }
-        //    else
-        //    {
-        //        break;
-        //    }
-        //} while (true);
-        cout << " Количество дней для проживания: ";
-        cin.get();
+        ReadAndValidateUserNumber(phone);
+        cout << "Количество дней для проживания:";
         cin >> days;
         cost = days * 900;//900 стоимость номера в день
         cout << "\n Клиент добавлен...!!!" << endl;
@@ -246,21 +260,8 @@ struct Client
         cout << "Новыая Фамилия: ";
         getline(cin, surename);
         cout << "Новый Номер телефона: ";
-        cin >> phone;
-        //do {
-        //    cout << "Новый Номер телефона: ";
-        //    cin >> phone;
-        //    cin.get();
-        //    if (phone > 9999999999 || phone < 1000000000)
-        //    {
-        //        cout << "Введите корректный номер телефона\n";
-        //        continue;
-        //    }
-        //    else
-        //    {
-        //        break;
-        //    }
-        //} while (true);
+        getline(cin, phone);
+        ReadAndValidateUserNumber(phone);
         cout << " Количество дней для проживания: ";
         cin >> days;
         cout << "Введите сумму:";
@@ -286,9 +287,9 @@ struct Client
     void report()
     {
         int nFile = 1;
-        vector<Client> clients;
         do {
             Client h;
+            vector<Client> clients;
             string path;
             path = path + ("hotel\\clients\\" + to_string(nFile) + ".txt");
             vector<string> text;
@@ -332,7 +333,7 @@ void Room::saveRoom()
         Room h;
         path = path + ("hotel\\rooms\\" + to_string(num) + ".txt");
         vector<string> text;
-        readFileRoom(path, text, 20);
+        readFileRoom(path, text, 5);
         if (text.empty())
         {
             break;
@@ -349,7 +350,7 @@ void Room::saveRoom()
     string path("hotel\\rooms\\" + to_string(num) + ".txt");
     ofstream fout;
     do {
-        add_customer_room();
+        add_room();
         fout.open(path, ios::app);
         if (fout.is_open())
         {
@@ -596,55 +597,43 @@ void Room::menuRoom()
 }
 void Client::save_customer()
 {
-    system("cls");
     //display_all_customer();
     int r = 1;
-    ofstream fout; 
+    ofstream fout;
     do {
         vector<string> client;
         fstream fin;
-        string path("hotel\\clients\\" + to_string(r) + ".txt");
+        Room h;
+        string path;
+        path = path + ("hotel\\clients\\" + to_string(r) + ".txt");
         fin.open(path);
-        if (fin.is_open())
+        if (!fin.is_open())
         {
-            string line;
+            add_customer();
+            fout.open(path);
+            if (fout.is_open())
+            {
+                fout << name << endl;
+                fout << surename << endl;
+                fout << phone << endl;
+                fout << days << endl;
+                fout << cost << endl;
+                h.esc();
+            }
+            fout.close();
+        }
+        else
+        {
+            string line = "";
             while (getline(fin, line))
             {
                 client.push_back(line);
             }
         }
-        else
-        {
-            break;
-        }
         fin.close();
         r++;
     } while (true);
-    do{
-        string path("hotel\\clients\\" + to_string(r) + ".txt");
-        fout.open(path);
-        add_customer();
-        if (fout.is_open())
-        {
-            fout << name << endl;
-            fout << surename << endl;
-            fout << phone << endl;
-            fout << days << endl;
-            fout << cost << endl;
-        }
-        fout.close();
-        cout << "\nНажмите любую клавишу для продолжения... \n";
-        char battom;
-        battom = _getch();
-        if ((int)battom == 27)
-        {
-            break;
-        }
-        else
-        {
-            break;
-        }
-    } while (true);
+    system("cls");
 }
 void Client::display_a_customer()
 {
@@ -813,13 +802,15 @@ void Client::delete_customer()
     {
         cout << "\n\n Record Not Found ";
     }
-    cout << "\n\n Нажмите любую клавишу, чтобы продолжить....!!";
+    cout << "\n\n Нажмите любую клавишу, что-бы продолжить....!!";
     _getch();
 }
 void Room::releaseNumber()
 {
     int k = 0;
     int f = 1;
+    fstream fin;
+    ofstream fout;
     showHeadRoom();
     vector<Room> rooms;
     int num = 1;
@@ -841,9 +832,6 @@ void Room::releaseNumber()
         num++;
         h.showRo(num);
     } while (true);
-    Client c;
-    fstream fin;
-    ofstream fout;
     f = 1;
     cout << "Выберите № номера для освобождения: \n";
     cin >> k;
@@ -868,6 +856,7 @@ void Room::releaseNumber()
         fin.close();
         if (text.empty())
         {
+            system("cls");
             break;
         }
         else
@@ -875,10 +864,9 @@ void Room::releaseNumber()
             createRoom(text, r);
             rooms.push_back(r);
         }
-        if (r.room_no == k)
+        if (r.local_no == k)
         {
-            k = 0;
-            r.status = k;
+            r.status = 0;
             fout.open(ispath);
             if (fout.is_open())
             {
@@ -951,8 +939,8 @@ void Client::client_menu()
         cin >> option;
         switch (option)
         {
-        case 1:save_customer();
-            system("cls");
+        case 1:system("cls");
+            save_customer();
             break;
         case 2:display_all_customer();
             system("cls");
@@ -974,25 +962,6 @@ void Client::client_menu()
     }
 
 }
-void intro()
-{
-    system("color 07");
-    system("cls");
-    cout << "\t\t\t\t*\t*";
-    cout << "\t\t\t\t**\t**";
-    cout << "\t\t\t\t***\t***";
-    cout << "\t\t\t\t****\t****";
-    cout << "\t\t\t\t*****\t*****";
-    cout << "\t\t\t\t******\t******";
-    cout << "\t\t\t\t*******\t*******";
-    cout << "\t\t\t\t*******\t*******";
-    cout << "\t\t\t\t******\t******";
-    cout << "\t\t\t\t*****\t*****";
-    cout << "\t\t\t\t****\t****";
-    cout << "\t\t\t\t***\t***";
-    cout << "\t\t\t\t**\t**";
-    cout << "\t\t\t\t*\t*";
-}
 
 int main()
 {
@@ -1000,10 +969,9 @@ int main()
     srand(time(NULL));
     SetConsoleCP(1251);
     SetConsoleOutputCP(1251);
+
     Room r;
     r.main_menu();
-    Client h;
-    //intro();
-    //h.client_menu();
+
     return 0;
 }
