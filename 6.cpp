@@ -110,7 +110,7 @@ struct Room
     }
     void add_room()
     {
-        cout << "\tМЕНЮ ДОБАВЛЕНИЯ НОМЕРА\n";
+        cout << "\n\tМЕНЮ ДОБАВЛЕНИЯ НОМЕРА\n";
         cout << "\n Введите данные номера";
         cout << "\n ----------------------" << endl;
         cout << " № Номер: ";
@@ -312,7 +312,7 @@ struct Client
     void display_all_customer();     //для отображения всех клиентов
     void display_a_customer();       //для отображения записи клиента
     void delete_customer();          //для удаления записи клиента
-    void removeCustomerRoom(int);    //для освобождения номера
+    void removeCustomerRoom(int);    //для освобождения номера и удаления записи клиента
 
 };
 void Room::saveRoom()
@@ -339,6 +339,7 @@ void Room::saveRoom()
         h.showRo(num);
     } while (true);
     cout << endl;
+    cout << "\tНа текущий момент в отеле " << num - 1 << " номер(ов)";
     string path("hotel\\rooms\\" + to_string(num) + ".txt");
     ofstream fout;
     do {
@@ -882,8 +883,8 @@ void Client::removeCustomerRoom(int n)
             } while (true);
         }
     } while (true);
-    //cout << "\n\n Нажмите любую клавишу, что-бы продолжить....!!";
-    //_getch();
+    cout << "\n\n Нажмите любую клавишу, что-бы продолжить....!!";
+    _getch();
 }
 void Room::releaseNumber()
 {
