@@ -72,7 +72,7 @@ struct Room
             Room h;
             path = path + ("hotel\\rooms\\" + to_string(num) + ".txt");
             vector<string> text;
-            readFileRoom(path, text, 20);
+            readFileRoom(path, text, 5);
             if (text.empty())
             {
                 break;
@@ -135,16 +135,16 @@ struct Room
         cout << "|№ | № Номера   "  << "| Категория  " << "| Цена за сутки " << "| Кол.мест  " << "| Статус        |" << endl;
         cout << "==========================================================================\n";
     }
-    void saveRoom();
-    void menuRoom();
-    void main_menu();
-    void menuBookRoom();
-    void listRoom();
-    void infoHeadRoom();
-    void bookRoomCategory();
-    void bookRoom();
-    void bookRoomCost();
-    void releaseNumber();
+    void saveRoom();            //Для добовления номера
+    void menuRoom();            //Для просмотра номеров
+    void main_menu();           //Главное меню
+    void menuBookRoom();        //Меню регистрации номера
+    void listRoom();            //Отображения списока номеров
+    void infoHeadRoom();        //Отображение шапки номеров
+    void bookRoomCategory();    //Регистрация клиента по категории
+    void bookRoom();            //Бронирование номера
+    void bookRoomCost();        //Бронирование номера по стоимости
+    void releaseNumber();       //Освобождение номера
 };
 struct Client
 {
@@ -237,7 +237,7 @@ struct Client
         cout << "Количество дней для проживания:";
         cin >> days;
         cost_room = days * c;
-        cout << "\n Клиент добавлен...!!!" << endl;
+        cout << "\n\tИнформация о клиенте добавлена...!!!\n";
     }
     void modify_customer_record()
     {
@@ -614,14 +614,13 @@ void Room::menuRoom()
 }
 void Client::save_customer(int no,int cost)
 {
-    //display_all_customer();
-    int r = 1;
+    int numFile = 1;
     ofstream fout;
     vector<string> client;
     fstream fin;
     Room h;
     do {
-        string path("hotel\\clients\\" + to_string(r) + ".txt");
+        string path("hotel\\clients\\" + to_string(numFile) + ".txt");
         fin.open(path);
         if (!fin.is_open())
         {
@@ -629,16 +628,15 @@ void Client::save_customer(int no,int cost)
             fout.open(path);
             if (fout.is_open())
             {
+                room_num = no;
                 fout << room_num << endl;
                 fout << name << endl;
                 fout << surename << endl;
                 fout << phone << endl;
                 fout << days << endl;
                 fout << cost_room << endl;
-                //h.esc();
             }
             fout.close();
-            cout << "Информация о клиенте добавлена.";
             break;
         }
         else
@@ -650,15 +648,17 @@ void Client::save_customer(int no,int cost)
             }
         }
         fin.close();
-        r++;
+        numFile++;
     } while (true);
+    cout << "\n\n Нажмите любую клавишу, что-бы продолжить....!!";
+    numFile = _getch();
 }
 void Client::display_a_customer()
 {
     system("cls");
     display_all_customer();
     int r = 0;
-    cout << "\n Выберите клиента: ";
+    cout << "\n Выберите № клиента: ";
     cin >> r;
     string path("hotel\\clients\\" + to_string(r) + ".txt");
     ifstream fin;
@@ -687,7 +687,7 @@ void Client::display_a_customer()
     }
     else
     {
-        cout << "\n Извините, клиента нет....!!";
+        cout << "\n Извините, информации о клиенте нет....!!";
     }
     fin.close();
     cout << "\nНажмите клавишу Esc... для возврата в главное меню \n";
