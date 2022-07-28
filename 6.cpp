@@ -312,7 +312,7 @@ struct Client
     void display_all_customer();     //для отображения всех клиентов
     void display_a_customer();       //для отображения записи клиента
     void delete_customer();          //для удаления записи клиента
-    void removeCustomerRoom(int);    //для освобождения номера и удаления записи клиента
+    void removeCustomerFromRoom(int);//для освобождения номера и удаления записи клиента
 
 };
 void Room::saveRoom()
@@ -629,7 +629,6 @@ void Client::save_customer(int no,int cost)
             fout.open(path);
             if (fout.is_open())
             {
-                room_num = no;
                 fout << room_num << endl;
                 fout << name << endl;
                 fout << surename << endl;
@@ -639,6 +638,7 @@ void Client::save_customer(int no,int cost)
                 //h.esc();
             }
             fout.close();
+            cout << "Информация о клиенте добавлена.";
             break;
         }
         else
@@ -652,7 +652,6 @@ void Client::save_customer(int no,int cost)
         fin.close();
         r++;
     } while (true);
-    system("cls");
 }
 void Client::display_a_customer()
 {
@@ -782,13 +781,11 @@ void Client::delete_customer()
     display_all_customer();
     int numFile = 0;
     Client c;
-    cout << "\n МЕНЮ УДАЛЕНИЯ";
-    cout << "\nВыберите № Клиента, которого вы хотите удалить: ";
-    cin >> numFile;
-    if (number = numFile)
-    {
-        cout << "\n\tВы действительно хотите удалить запись (Y/N): ";
-        do {
+    do {
+        cout << "\nВыберите № Клиента, которого вы хотите удалить: ";
+        if (cin >> numFile)
+        {
+            cout << "\n\tВы действительно хотите удалить запись (Y/N): ";
             char battom;
             battom = _getch();
             if (battom == 'n')
@@ -803,10 +800,15 @@ void Client::delete_customer()
                 Room h;
                 vector<Room> rooms;
                 do {
-                    string path("hotel\\clients\\" + to_string(numFile) + ".txt");
+                    string path_client("hotel\\clients\\" + to_string(numFile) + ".txt");
                     vector<string> client;
-                    fin.open(path);
-                    if (fin.is_open())
+                    fin.open(path_client);
+                    if (!fin.is_open())
+                    {
+                        cout << "\n № файла клиента не найден.";
+                        break;
+                    }
+                    else
                     {
                         string line = "";
                         while (getline(fin, line))
@@ -843,37 +845,39 @@ void Client::delete_customer()
                         fout.close();
                         cout << "\n\tНомер свободен! ";
                     }
-                  } while (true);
-                  string path("hotel\\clients\\" + to_string(numFile) + ".txt");
-                  remove(path.c_str());
-                  string newPath;
-                  do {
-                      numFile++;
-                      string path("hotel\\clients\\" + to_string(numFile) + ".txt");
-                      fin.open(path);
-                      if (!fin.is_open())
-                          break;
-                      fin.close();
-                      string newPath("hotel\\clients\\" + to_string(numFile - 1) + ".txt");
+                    string ipath("hotel\\clients\\" + to_string(numFile) + ".txt");
+                    remove(ipath.c_str());
+                    string newPath;
+                    do {
+                        numFile++;
+                        string path("hotel\\clients\\" + to_string(numFile) + ".txt");
+                        fin.open(path);
+                        if (!fin.is_open())
+                            break;
+                        fin.close();
+                        string newPath("hotel\\clients\\" + to_string(numFile - 1) + ".txt");
 
-                      if (rename(path.c_str(), newPath.c_str()) == 0)
-                      {
-                          continue;
-                      }
-                  } while (true);
-                cout << "\n\tФайл удален!";
+                        if (rename(path.c_str(), newPath.c_str()) == 0)
+                        {
+                            continue;
+                        }
+                    } while (true);
+                    cout << "\n\tФайл удален!";
+                    break;
+                } while (true);
                 break;
             }
-        } while (true);
-    }
-    else
-    {
-        cout << "Record not fold!\n";
-    }
+        }
+        else
+        {
+            cout << "\nВведите корректные данные!";
+            break;
+        }
+    } while (true);
     cout << "\n\n Нажмите любую клавишу, что-бы продолжить....!!";
-    _getch();
+    numFile =_getch();
 }
-void Client::removeCustomerRoom(int n)
+void Client::removeCustomerFromRoom(int n)
 {
     int numFile = 1;
     Client c;
@@ -931,7 +935,7 @@ void Client::removeCustomerRoom(int n)
         }
     } while (true);
     cout << "\n\n Нажмите любую клавишу, что-бы продолжить....!!";
-    _getch();
+    nFile = _getch();
 }
 void Room::releaseNumber()
 {
@@ -1004,11 +1008,11 @@ void Room::releaseNumber()
                 fout << r.status << endl;
             }
             fout.close();
-            c.removeCustomerRoom(n);
-            cout << "\n\tНомер свободен! ";
+            c.removeCustomerFromRoom(n);
         }
         f++;
     } while (true);
+    cout << "\n\tНомер свободен! ";
     esc();
 }
 void Room::main_menu()
@@ -1053,8 +1057,8 @@ void Room::main_menu()
         else
         {
             system("cls");
-            cout << "Incorrect input" << endl;
-            return;
+            cout << "Incorrect input!" << endl;
+            break;
             exit(0);
         }
     } while (true);
