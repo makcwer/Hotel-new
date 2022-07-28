@@ -742,7 +742,7 @@ void Client::modify_customer()
     }
     fp.close();
     cout << "\n\n Нажмите любую клавишу, чтобы продолжить....!!";
-    _getch();
+    numFile = _getch();
     system("cls");
 }
 void showHeadClient()   
@@ -769,12 +769,12 @@ void Client::display_all_customer()
     else
     {
         cout << "ERROR!!! FILE COULD NOT BE OPEN ";
-        _getch();
+        numFile = _getch();
         return;
     }
     fp.close();
     cout << "\n Нажмите любую клавишу, чтобы продолжить.....!!";
-    _getch();
+    numFile = _getch();
 }
 void Client::delete_customer()
 {
@@ -877,17 +877,17 @@ void Client::delete_customer()
     cout << "\n\n Нажмите любую клавишу, что-бы продолжить....!!";
     numFile =_getch();
 }
-void Client::removeCustomerFromRoom(int n)
+void Client::removeCustomerFromRoom(int numRoom)
 {
     int numFile = 1;
     Client c;
     int nFile = 1;
     do {
         vector<Client> clients;
-        string path;
-        path = path + ("hotel\\clients\\" + to_string(nFile) + ".txt");
+        string ispath;
+        ispath = ispath + ("hotel\\clients\\" + to_string(nFile) + ".txt");
         vector<string> text;
-        readFileClient(path, text, 6);
+        readFileClient(ispath, text, 6);
         if (text.empty())
         {
             break;
@@ -898,7 +898,7 @@ void Client::removeCustomerFromRoom(int n)
             clients.push_back(c);
         }
         nFile++;
-        if (c.room_num == n)
+        if (c.room_num == numRoom)
         {
             cout << "\n\tХотите удалить запись клиента (Y/N): ";
             do {
@@ -910,8 +910,8 @@ void Client::removeCustomerFromRoom(int n)
                 }
                 else
                 {
-                    string path("hotel\\clients\\" + to_string(numFile) + ".txt");
-                    remove(path.c_str());
+                    string ipath("hotel\\clients\\" + to_string(numFile) + ".txt");
+                    remove(ipath.c_str());
                     ifstream fin;
                     string newPath;
                     do {
@@ -939,7 +939,7 @@ void Client::removeCustomerFromRoom(int n)
 }
 void Room::releaseNumber()
 {
-    int n = 0;
+    int numRoom = 0;
     int f = 1;
     fstream fin;
     ofstream fout;
@@ -950,7 +950,7 @@ void Room::releaseNumber()
         Room h;
         path = path + ("hotel\\rooms\\" + to_string(f) + ".txt");
         vector<string> text;
-        readFileRoom(path, text, 5);
+        readFileRoom(path, text, 6);
         if (text.empty())
         {
             break;
@@ -966,13 +966,12 @@ void Room::releaseNumber()
     f = 1;
     Client c;
     cout << "Выберите № номера который надо освободить: \n";
-    cin >> n;
+    cin >> numRoom;
     do {
         Room r;
         string ispath = "";
         ispath = ispath + ("hotel\\rooms\\" + to_string(f) + ".txt");
         vector<string> text;
-        ifstream fin;
         fin.open(ispath);
         if (fin.is_open())
         {
@@ -995,7 +994,7 @@ void Room::releaseNumber()
             createRoom(text, r);
             rooms.push_back(r);
         }
-        if (r.room_no == n)
+        if (r.room_no == numRoom)
         {
             r.status = 0;
             fout.open(ispath);
@@ -1008,7 +1007,7 @@ void Room::releaseNumber()
                 fout << r.status << endl;
             }
             fout.close();
-            c.removeCustomerFromRoom(n);
+            c.removeCustomerFromRoom(numRoom);
         }
         f++;
     } while (true);
@@ -1025,7 +1024,7 @@ void Room::main_menu()
         cout << "\n\n\t\t\t\tГЛАВНОЕ МЕНЮ\n";
         cout << "\t\t\t$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$\n";
         cout << "\t\t\t 1.Посмотреть список номеров " << endl;
-        cout << "\t\t\t 2.Меню клиентов \n";
+        cout << "\t\t\t 2.Меню записи клиентов \n";
         cout << "\t\t\t 3.Забронировать номер \n";
         cout << "\t\t\t 4.Освободить номер \n";
         cout << "\t\t\t 5.Открыть новый номер в отеле \n";
@@ -1057,8 +1056,8 @@ void Room::main_menu()
         else
         {
             system("cls");
+            system("pause");
             cout << "Incorrect input!" << endl;
-            break;
             exit(0);
         }
     } while (true);
