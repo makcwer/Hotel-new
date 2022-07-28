@@ -14,11 +14,11 @@ using namespace std;
 
 struct Room
 {
-    unsigned short int room_no;
-    string category;
-    unsigned short int cost_num;
-    unsigned short int local_no;
-    int status;
+    unsigned short int room_no = 0;
+    string category = "";
+    unsigned short int cost_num = 0;
+    unsigned short int local_no = 0;
+    int status = 0;
     //Room(){}
     //Room(int num, unsigned short int room_no, string category, unsigned short int cost_num, unsigned short int local_no, string status)
     //{
@@ -781,8 +781,9 @@ void Client::delete_customer()
 {
     display_all_customer();
     int numFile = 0;
-    cout << "\n\n\n МЕНЮ УДАЛЕНИЯ";
-    cout << "\n\nВыберите № Клиента, которого вы хотите удалить: ";
+    Client c;
+    cout << "\n МЕНЮ УДАЛЕНИЯ";
+    cout << "\nВыберите № Клиента, которого вы хотите удалить: ";
     cin >> numFile;
     if (number = numFile)
     {
@@ -795,25 +796,71 @@ void Client::delete_customer()
                 break;
             }
             else
-            {    
-                string path("hotel\\clients\\" + to_string(numFile) + ".txt");
-                remove(path.c_str());
-                ifstream fin;
-                string newPath;
+            {
+                int f = 1;
+                fstream fin;
+                ofstream fout;
+                Room h;
+                vector<Room> rooms;
                 do {
-                    numFile++;
                     string path("hotel\\clients\\" + to_string(numFile) + ".txt");
+                    vector<string> client;
                     fin.open(path);
-                    if (!fin.is_open())
-                        break;
-                    fin.close();
-                    string newPath("hotel\\clients\\" + to_string(numFile - 1) + ".txt");
-
-                    if (rename(path.c_str(), newPath.c_str()) == 0)
+                    if (fin.is_open())
                     {
-                        continue;
+                        string line = "";
+                        while (getline(fin, line))
+                        {
+                            client.push_back(line);
+                        }
                     }
-                } while (true);
+                    fin.close();
+                    string path_room("hotel\\rooms\\" + to_string(f) + ".txt");
+                    vector<string> text;
+                    h.readFileRoom(path_room, text, 5);
+                    if (text.empty())
+                    {
+                        break;
+                    }
+                    else
+                    {
+                        h.createRoom(text, h);
+                        rooms.push_back(h);
+                    }
+                    f++;
+                    if (stoi(client[0]) == h.room_no)
+                    {
+                        h.status = 0;
+                        fout.open(path_room);
+                        if (fout.is_open())
+                        {
+                            fout << h.room_no << endl;
+                            fout << h.category << endl;
+                            fout << h.cost_num << endl;
+                            fout << h.local_no << endl;
+                            fout << h.status << endl;
+                        }
+                        fout.close();
+                        cout << "\n\tНомер свободен! ";
+                    }
+                  } while (true);
+                  string path("hotel\\clients\\" + to_string(numFile) + ".txt");
+                  remove(path.c_str());
+                  string newPath;
+                  do {
+                      numFile++;
+                      string path("hotel\\clients\\" + to_string(numFile) + ".txt");
+                      fin.open(path);
+                      if (!fin.is_open())
+                          break;
+                      fin.close();
+                      string newPath("hotel\\clients\\" + to_string(numFile - 1) + ".txt");
+
+                      if (rename(path.c_str(), newPath.c_str()) == 0)
+                      {
+                          continue;
+                      }
+                  } while (true);
                 cout << "\n\tФайл удален!";
                 break;
             }
@@ -821,7 +868,7 @@ void Client::delete_customer()
     }
     else
     {
-        cout << "\n\n Record Not Found ";
+        cout << "Record not fold!\n";
     }
     cout << "\n\n Нажмите любую клавишу, что-бы продолжить....!!";
     _getch();
@@ -894,11 +941,10 @@ void Room::releaseNumber()
     ofstream fout;
     infoHeadRoom();
     vector<Room> rooms;
-    int num = 1;
     do {
         string path;
         Room h;
-        path = path + ("hotel\\rooms\\" + to_string(num) + ".txt");
+        path = path + ("hotel\\rooms\\" + to_string(f) + ".txt");
         vector<string> text;
         readFileRoom(path, text, 5);
         if (text.empty())
@@ -910,7 +956,7 @@ void Room::releaseNumber()
             createRoom(text, h);
             rooms.push_back(h);
         }
-        num++;
+        f++;
         h.listRoom();
     } while (true);
     f = 1;
@@ -957,12 +1003,13 @@ void Room::releaseNumber()
                 fout << r.local_no << endl;
                 fout << r.status << endl;
             }
+            fout.close();
             c.removeCustomerRoom(n);
             cout << "\n\tНомер свободен! ";
-            esc();
         }
         f++;
     } while (true);
+    esc();
 }
 void Room::main_menu()
 {
@@ -970,6 +1017,7 @@ void Room::main_menu()
     int change = 0;
     do
     {
+        system("cls");
         cout << "\n\n\t\t\t\tГЛАВНОЕ МЕНЮ\n";
         cout << "\t\t\t$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$\n";
         cout << "\t\t\t 1.Посмотреть список номеров " << endl;
@@ -1014,16 +1062,16 @@ void Room::main_menu()
 void Client::client_menu()
 {
     Room h;
-    Client c;
     int option = 0;
     while(true)
     {
+        system("cls");
         cout << "\n\t\t@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@";
         cout << "\n\t\t1.Добавить клиента";
         cout << "\n\t\t2.Список клиентов";
         cout << "\n\t\t3.Информация о клиенте";
-        cout << "\n\t\t4.Редактирование";
-        cout << "\n\t\t5.Удаление клиента";
+        cout << "\n\t\t4.Редактирование записи клиента";
+        cout << "\n\t\t5.Удалить запись клиента";
         cout << "\n\t\t6.Вернутся в главное меню";
         cout << "\n\t\t@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@\n";
         cout << "\n\t\tВАШ ВЫБОР: ";
