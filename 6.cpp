@@ -340,11 +340,11 @@ void Room::saveRoom()
     } while (true);
     cout << endl;
     cout << "\tНа текущий момент в отеле " << num - 1 << " номер(ов)";
-    string path("hotel\\rooms\\" + to_string(num) + ".txt");
+    string ipath("hotel\\rooms\\" + to_string(num) + ".txt");
     ofstream fout;
     do {
         add_room();
-        fout.open(path, ios::app);
+        fout.open(ipath, ios::app);
         if (fout.is_open())
         {
             fout << room_no << endl;
@@ -788,7 +788,7 @@ void Client::delete_customer()
             cout << "\n\tВы действительно хотите удалить запись (Y/N): ";
             char battom;
             battom = _getch();
-            if (battom == 'n')
+            if (battom == 'n' || battom == 'N')
             {
                 break;
             }
@@ -904,7 +904,7 @@ void Client::removeCustomerFromRoom(int numRoom)
             do {
                 char battom;
                 battom = _getch();
-                if (battom == 'n')
+                if (battom == 'n' || battom == 'N')
                 {
                     break;
                 }
