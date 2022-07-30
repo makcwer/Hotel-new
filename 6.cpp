@@ -10,8 +10,14 @@
 #include <conio.h>
 #include <regex>
 
+// Вспомогательные файлы
+#include "Example.h"
+
 using namespace std;
 
+
+
+// TODO: Вынести структуру Room в отдельный "модуль". Под модулем подразумевается h-файл и cpp-файл. То есть добавить новый файлы Res.h и Res.cpp
 struct Room
 {
 	unsigned short int room_no = 0;
@@ -146,6 +152,8 @@ struct Room
 	void bookRoomCost();        //Бронирование номера по стоимости
 	void releaseNumber();       //Освобождение номера
 };
+
+// TODO: Вынести структуру Client в отдельный "модуль": Client.h и Client.cpp
 struct Client
 {
 	int number = 1;
@@ -315,6 +323,8 @@ struct Client
 	void removeCustomerFromRoom(int);//для освобождения номера и удаления записи клиента
 
 };
+
+// TODO: подсказка Room::SOME_METHOD() - это должно попасть в Room.cpp
 void Room::saveRoom()
 {
 	showHeadRoom();
@@ -1113,6 +1123,9 @@ void Client::client_menu()
 
 int main()
 {
+	Example example;
+	example.Print();
+
 	setlocale(0, "");
 	srand(time(NULL));
 	SetConsoleCP(1251);
